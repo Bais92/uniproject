@@ -1,0 +1,32 @@
+# General
+# ------------------------------------------------------------------------------
+# DJANGO_READ_DOT_ENV_FILE=True
+DJANGO_SETTINGS_MODULE=config.settings.production
+DJANGO_SECRET_KEY=gxM2HuTVs88WyyuXg50puPlK8ESRSp01BNdwkKSY3T7qx6suaxy042EWTHLAW4Pi
+DJANGO_ADMIN_URL=fzJPjm9bO1CbrorZrlOVOMnZ0L4LLun5/
+DJANGO_ALLOWED_HOSTS=.uni-project.de
+
+# Security
+# ------------------------------------------------------------------------------
+# TIP: better off using DNS, however, redirect is OK too
+DJANGO_SECURE_SSL_REDIRECT=False
+
+# Email
+# ------------------------------------------------------------------------------
+MAILGUN_API_KEY=
+DJANGO_SERVER_EMAIL=
+MAILGUN_DOMAIN=
+
+# django-allauth
+# ------------------------------------------------------------------------------
+DJANGO_ACCOUNT_ALLOW_REGISTRATION=True
+
+# Gunicorn
+# ------------------------------------------------------------------------------
+WEB_CONCURRENCY=4
+
+
+# Redis
+# ------------------------------------------------------------------------------
+REDIS_URL=redis://redis:6379/0
+
