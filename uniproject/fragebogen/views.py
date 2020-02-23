@@ -46,7 +46,7 @@ class FormListWizzard(SessionWizardView):
             error = 0
             for page in range(0, 2):
                 answer = self.get_cleaned_data_for_step(str(page))['answer_number']
-                correct_answer = QuestionExperiment.objects.get(experiment_id=self.kwargs['pk'], page=page)
+                correct_answer = QuestionExperiment.objects.get(experiment_id=self.kwargs['pk'], page=page+1)
                 error += correct_answer.calculate_error_per_instance_number(answer)
             kwargs['calculated_error'] = error
             kwargs['experiment'] = self.kwargs['pk']

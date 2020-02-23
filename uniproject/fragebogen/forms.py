@@ -121,7 +121,7 @@ class UserForm(forms.ModelForm):
 fragen = [
     (0, Frage1Form),
     (1, Frage2Form),
-    (3, Frage3Form),
+    (2, Frage3Form),
     # (3, Frage4Form),
     # (4, Frage5Form),
     # (5, Frage6Form),
