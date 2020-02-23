@@ -10,7 +10,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: uniproject_production_django
+    image: pmodulwi19/uniproject:django
     depends_on:
       - postgres
       - redis
@@ -23,7 +23,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: uniproject_production_postgres
+    image: pmodulwi19/uniproject:postgres
     volumes:
       - production_postgres_data:/var/lib/postgresql/data
       - production_postgres_data_backups:/backups
@@ -34,7 +34,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/traefik/Dockerfile
-    image: uniproject_production_traefik
+    image: pmodulwi19/uniproject:traefik
     depends_on:
       - django
     volumes:
@@ -46,4 +46,4 @@ services:
   redis:
     image: redis:5.0
 
-  
+

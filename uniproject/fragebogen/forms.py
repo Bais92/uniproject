@@ -1,6 +1,7 @@
 # django imports
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django import forms
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 
@@ -10,160 +11,124 @@ from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field, R
 from crispy_forms.bootstrap import PrependedText
 # own apps
 
+from uniproject.fragebogen.models import QuestionExperiment, Question, Results, Experiment, Benutzer
+
 User = get_user_model()
 
-# Choice options
-CHOICES_Boolean = [
-    ('True', _('Yes')),
-    ('False', _('No')),
-]
 
+class AntwortNummerForm(forms.ModelForm):
+    page = None
+    answer_number = forms.IntegerField()
 
-# Schätzfragen
-class SmartphoneForm(forms.Form):
-    antwort = forms.IntegerField(
-        validators=[MinValueValidator(0)],
-        help_text="Wie viele Menschen in Deutschland nutzen ein Smartphone? (in Mio)")
+    class Meta:
+        model = Results
+        fields = ['answer_number']
 
     def __init__(self, *args, **kwargs):
-        super(SmartphoneForm, self).__init__(*args, **kwargs)
+        self.experiment_id = kwargs.pop('experiment')
+        super(AntwortNummerForm, self).__init__(*args, **kwargs)
+        if not self.page:
+            raise ImproperlyConfigured("Es wurde keine Seite (page) angegeben")
+        experiment = Experiment.objects.get(id=self.experiment_id)
+        self.questionexperiment = QuestionExperiment.objects.get(experiment=experiment, page=self.page)
+        question = Question.objects.get(experiment=experiment, questionexperiment__page=self.page)
+        self.fields['answer_number'].label = question.question
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.form_show_labels = False
-        self.helper.form_class = 'form-control'
-        self.helper.field_class = 'col'
+
+    def save(self, commit=True):
+        instance = super(AntwortNummerForm, self).save(commit=False)
+        instance.questionexperiment = self.questionexperiment
+        if commit:
+            instance.save()
+        return instance
 
 
-class GrenzeForm(forms.Form):
-    antwort = forms.IntegerField(
-        validators=[MinValueValidator(0)],
-        help_text="Wie lang ist die deutsche Grenze zu Österreich?"
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(GrenzeForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.form_show_labels = False
-        self.helper.form_class = 'form-control'
-        self.helper.field_class = 'col'
 
 
-class ZugspitzForm(forms.Form):
-    antwort = forms.IntegerField(
-        validators=[MinValueValidator(0)],
-        help_text="Wie hoch ist die Zugspitze?"
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(ZugspitzForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.form_show_labels = False
-        self.helper.form_class = 'form-control'
-        self.helper.field_class = 'col'
+class Frage1Form(AntwortNummerForm):
+    page = 1
 
 
-class AnteilStadtbevoelkerungForm(forms.Form):
-    antwort = forms.DecimalField(
-        validators=[MinValueValidator(0)],
-        max_digits=5,
-        decimal_places=2,
-        help_text="Wie hoch ist der Anteil der Stadtbewohner an der "
-                  "Gesamtbevölkerung in Deutschland?"
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(AnteilStadtbevoelkerungForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.form_show_labels = False
-        self.helper.form_class = 'form-control'
-        self.helper.field_class = 'col'
+class Frage2Form(AntwortNummerForm):
+    page = 2
 
 
-class AltersAnteilsForm(forms.Form):
-    antwort = forms.DecimalField(
-        validators=[MinValueValidator(0)],
-        max_digits=5,
-        decimal_places=2,
-        help_text="Wie viele Menschen zwischen 20 und 30 Jahren leben in Deutschland "
-                  "(in Mio. auf eine Dezimalstelle gerundet)?"
-    )
+class Frage3Form(AntwortNummerForm):
+    page = 3
+
+
+class Frage4Form(AntwortNummerForm):
+    page = 4
+
+
+class Frage5Form(AntwortNummerForm):
+    page = 5
+
+
+class Frage6Form(AntwortNummerForm):
+    page = 6
+
+
+class Frage7Form(AntwortNummerForm):
+    page = 7
+
+
+class Frage8Form(AntwortNummerForm):
+    page = 8
+
+
+class Frage9Form(AntwortNummerForm):
+    page = 9
+
+
+class Frage10Form(AntwortNummerForm):
+    page = 10
+
+
+class NudgeForm(forms.Form):
+    nudge = forms.CharField(label='Hinweis:', required=False)
 
     def __init__(self, *args, **kwargs):
-        super(AltersAnteilsForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.form_show_labels = False
-        self.helper.form_class = 'form-control'
-        self.helper.field_class = 'col'
-
-
-class VWAnteilsForm(forms.Form):
-    antwort = forms.DecimalField(
-        validators=[MinValueValidator(0)],
-        max_digits=5,
-        decimal_places=2,
-        help_text="Wie hoch ist der Marktanteil von Volkswagen in Deutschland?"
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(VWAnteilsForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.form_show_labels = False
-        self.helper.form_class = 'form-control'
-        self.helper.field_class = 'col'
-
-
-# BooleanForms
-CHOICES_HOCH_RICHTIG_TIEF = (
-    (1, 'zu hoch'),
-    (0, 'stimmt'),
-    (-1, 'zu niedrig'),
-)
-
-
-class LondonEinwohnerForm(forms.Form):
-    antwort = forms.ChoiceField(
-        choices=CHOICES_HOCH_RICHTIG_TIEF,
-        widget=forms.RadioSelect,
-        required=True,
-        help_text="London hat ca. 10 Mio. Einwohner."
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(LondonEinwohnerForm, self).__init__(*args, **kwargs)
+        self.experiment_id = kwargs.pop('experiment', None)
+        self.error = kwargs.pop('calculated_error', None)
+        super(NudgeForm, self).__init__(*args, **kwargs)
+        nudge = Experiment.objects.get(id=self.experiment_id).nudge.presentation_type
+        if nudge is None:
+            self.fields['nudge'].widget = forms.HiddenInput()
+        elif self.error and nudge is False:
+            self.error = - self.error
+        if self.error:
+            message = 'Sie haben bei den letzten Fragen eher zu %s geantwortet' % ('hoch' if self.error >= 0 else 'niedrig')
+            self.fields['nudge'].initial = message
+        self.fields['nudge'].widget.attrs['readonly'] = True
         self.helper = FormHelper()
         self.helper.form_tag = False
 
 
-CHOICES_LIKERT = (
-    (1, "trifft überhaupt nicht zu"),
-    (2, "trifft nicht zu"),
-    (3, "unentschlossen"),
-    (4, "trifft zu"),
-    (5, "trifft vollkommen zu")
-)
+class UserForm(forms.ModelForm):
 
-
-class LikertTestForm(forms.Form):
-    antwort = forms.ChoiceField(
-        choices=CHOICES_LIKERT,
-        widget=forms.RadioSelect,
-        required=True,
-        help_text="London hat ca. 10 Mio. Einwohner."
-    )
+    class Meta:
+        model = Benutzer
+        fields = ['vorname', 'nachname', 'email']
 
     def __init__(self, *args, **kwargs):
-        super(LikertTestForm, self).__init__(*args, **kwargs)
+        super(UserForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
 
 
-form_list = [
-    ('smartphone', SmartphoneForm),
-    ('londoneinwohner', LondonEinwohnerForm),
-    ('likertest', LikertTestForm)
+fragen = [
+    (0, Frage1Form),
+    (1, Frage2Form),
+    (3, Frage3Form),
+    # (3, Frage4Form),
+    # (4, Frage5Form),
+    # (5, Frage6Form),
+    # (6, Frage7Form),
+    # (7, Frage8Form),
+    # (8, Frage9Form),
+    # (9, Frage10Form),
+    ('nudge', NudgeForm),
+    ('name', UserForm)
 ]
