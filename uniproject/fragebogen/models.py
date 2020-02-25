@@ -25,9 +25,15 @@ class Benutzer(TimeStampedModel):
     nachname = models.CharField(max_length=50)
     email = models.EmailField()
 
+    def __str__(self):
+        return '%s %s' % (self.nachname, self.email)
+
 
 class Error(TimeStampedModel):
     name = models.CharField(max_length=64)
+
+    def __str__(self):
+        return '%s' % self.name
 
 
 class Experiment(TimeStampedModel):
@@ -91,6 +97,9 @@ class Results(TimeStampedModel):
     # wieder aufgehoben, ist hier aber wichtig.
     answer_number = models.IntegerField(null=True, blank=True)
     error = models.ForeignKey(Error, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return '%s %s' % (self.user, self.questionexperiment.experiment)
 
 
 class Nudge(TimeStampedModel):

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, render_to_response, HttpResponseRedirect, reverse
+from django.views.generic.base import TemplateView
 
 
 from formtools.wizard.views import SessionWizardView
@@ -95,7 +96,7 @@ class FormListWizzard(SessionWizardView):
                 result = form.save(commit=False)
                 result.user = user
                 result.save()
-        return HttpResponseRedirect(reverse('home'))
+        return HttpResponseRedirect(reverse('fragebogen:thank-you'))
 
 
 # Da die Klasse zur Zeit nur eine Python Klasse ist, muss diese in den request-response Zyklus eingeführt werden. Hier
@@ -107,3 +108,6 @@ formlist_wizard = FormListWizzard.as_view(
     form_list=fragen,
     template_name='fragebogen/fragebogen.html'
 )
+
+class ThankYouView(TemplateView):
+    template_name = 'fragebogen/thank-you.html'
