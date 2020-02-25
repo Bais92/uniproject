@@ -126,7 +126,6 @@ class Frage20Form(AntwortNummerForm):
     page = 20
 
 
-
 class NudgeForm(forms.Form):
     nudge = forms.CharField(label='Hinweis:', required=False)
 

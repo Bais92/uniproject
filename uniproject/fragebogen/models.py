@@ -99,7 +99,7 @@ class Results(TimeStampedModel):
     error = models.ForeignKey(Error, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return '%s %s' % (self.user, self.questionexperiment.experiment)
+        return '%s Experiment_id: %s' % (self.user, self.questionexperiment.experiment.id)
 
 
 class Nudge(TimeStampedModel):
