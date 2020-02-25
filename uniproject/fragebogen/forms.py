@@ -86,6 +86,47 @@ class Frage10Form(AntwortNummerForm):
     page = 10
 
 
+class Frage11Form(AntwortNummerForm):
+    page = 11
+
+
+class Frage12Form(AntwortNummerForm):
+    page = 12
+
+
+class Frage13Form(AntwortNummerForm):
+    page = 13
+
+
+class Frage14Form(AntwortNummerForm):
+    page = 14
+
+
+class Frage15Form(AntwortNummerForm):
+    page = 15
+
+
+class Frage16Form(AntwortNummerForm):
+    page = 16
+
+
+class Frage17Form(AntwortNummerForm):
+    page = 17
+
+
+class Frage18Form(AntwortNummerForm):
+    page = 18
+
+
+class Frage19Form(AntwortNummerForm):
+    page = 19
+
+
+class Frage20Form(AntwortNummerForm):
+    page = 20
+
+
+
 class NudgeForm(forms.Form):
     nudge = forms.CharField(label='Hinweis:', required=False)
 
@@ -122,13 +163,23 @@ fragen = [
     (0, Frage1Form),
     (1, Frage2Form),
     (2, Frage3Form),
-    # (3, Frage4Form),
-    # (4, Frage5Form),
-    # (5, Frage6Form),
-    # (6, Frage7Form),
-    # (7, Frage8Form),
-    # (8, Frage9Form),
-    # (9, Frage10Form),
+    (3, Frage4Form),
+    (4, Frage5Form),
+    (5, Frage6Form),
+    (6, Frage7Form),
+    (7, Frage8Form),
+    (8, Frage9Form),
+    (9, Frage10Form),
     ('nudge', NudgeForm),
+    (11, Frage11Form),
+    (12, Frage12Form),
+    (13, Frage13Form),
+    (14, Frage14Form),
+    (15, Frage15Form),
+    (16, Frage16Form),
+    (17, Frage17Form),
+    (18, Frage18Form),
+    (19, Frage19Form),
+    (20, Frage20Form),
     ('name', UserForm)
 ]

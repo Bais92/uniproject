@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import settings
+from django.shortcuts import reverse
 
 User = settings.AUTH_USER_MODEL
 
@@ -37,6 +38,12 @@ class Experiment(TimeStampedModel):
     error = models.ForeignKey(Error, on_delete=models.CASCADE)
     nudge = models.ForeignKey('Nudge', on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return '%s %s' % (self.error, self.nudge)
+
+    def get_absolute_url(self):
+        return reverse('fragebogen:wizzard', kwargs={'pk': self.id})
+
 
 # Create your models here.
 class Question(TimeStampedModel):
@@ -46,7 +53,7 @@ class Question(TimeStampedModel):
     question_type = models.CharField(max_length=30, help_text="Question Type", default='estimation')
     question = models.TextField()
     experiment = models.ManyToManyField(Experiment, through='QuestionExperiment')
-    correct_answer_number = models.IntegerField(blank=True, null=True)
+    correct_answer_number = models.IntegerField()
 
     def __str__(self):
         return "%s %s " % (self.question_type, self.question)
@@ -63,8 +70,12 @@ class QuestionExperiment(TimeStampedModel):
     question = models.ForeignKey(Question, on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        # hier wird ein SQL UNIQUE TOGETHER constraint eingeführt, um sicherzustellen, dass die SQL
-        unique_together = [('page', 'experiment', 'question')]
+        # hier wird ein SQL UNIQUE TOGETHER constraint eingeführt, um sicherzustellen, dass die SQL Abfragen
+        # funktionieren
+        unique_together = [('page', 'experiment', 'question'), ('page', 'experiment'), ('question', 'experiment')]
+
+    def __str__(self):
+        return '%s %s %s' % (self.experiment, self.question, self.page)
 
     def calculate_error_per_instance_number(self, answer):
         correct_answer = self.question.correct_answer_number
@@ -82,7 +93,6 @@ class Results(TimeStampedModel):
     error = models.ForeignKey(Error, on_delete=models.SET_NULL, null=True, blank=True)
 
 
-
 class Nudge(TimeStampedModel):
     CHOICES_PRESENTATION_TYPE = [
         (None, 'Keine Hilfe'),
@@ -91,5 +101,8 @@ class Nudge(TimeStampedModel):
     ]
     nudge_type = models.CharField(max_length=32)
     presentation_type = models.BooleanField(blank=True, null=True, default=None, choices=CHOICES_PRESENTATION_TYPE)
+
+    def __str__(self):
+        return '%s %s' % (self.nudge_type, self.get_presentation_type_display())
 
 
