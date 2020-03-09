@@ -44,8 +44,6 @@ class AntwortNummerForm(forms.ModelForm):
         return instance
 
 
-
-
 class Frage1Form(AntwortNummerForm):
     page = 1
 

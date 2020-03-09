@@ -18,6 +18,7 @@ class QuestionInline(admin.StackedInline):
 
 
 class QuestionExperimentReadOnlyInline(admin.StackedInline):
+    """Object für die Darstellung des QuestionExperiment im Adminbereich"""
     model = QuestionExperiment
     extra = 0
     readonly_fields = ['id', 'page', 'experiment', 'question']
@@ -28,6 +29,7 @@ class QuestionExperimentReadOnlyInline(admin.StackedInline):
 
 
 class QuestionExperimentInline(admin.StackedInline):
+    """Object für die Darstellung des QuestionExperiment im Adminbereich"""
     model = QuestionExperiment
 
 
@@ -37,11 +39,9 @@ class ExperimentAdmin(admin.ModelAdmin):
     inlines = [
         QuestionExperimentInline
     ]
-
     list_display = (
         'URL',
     )
-
     readonly_fields = (
         'URL',
     )
@@ -63,6 +63,7 @@ class ExperimentAdmin(admin.ModelAdmin):
         else:
             return u'{url}'.format(
                 # access the request object through self.request, as set by the two view functions
+                # this is actually a bad practice, however sufficent.
                 url=self.request.build_absolute_uri(reverse('fragebogen:wizzard', args=(obj.pk,)))
             )
 
