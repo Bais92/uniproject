@@ -5,6 +5,8 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
+# project urls: In this file all project specific request will be routed to the different applications.
+
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path("fragebogen/", include("uniproject.fragebogen.urls", namespace="fragebogen")),
